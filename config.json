@@ -1,0 +1,19 @@
+{
+    "FTP_IP": "",
+    "FTP_USER": "",
+    "FTP_PASS": "",
+    "FTP_BASE_DIR": "/dataloggers",
+    "EMAIL_USER": "",
+    "EMAIL_PASS": "",
+    "EMAIL_RECIPIENTS": [
+        ""
+    ],
+    "DATALOGGERS": [
+        "meteo",
+        "solar",
+        "nilu",
+        "rsi",
+        "koukouli",
+        "suntracker"
+    ]
+}
