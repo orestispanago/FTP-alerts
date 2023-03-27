@@ -1,7 +1,7 @@
 import datetime
 from ftplib import FTP
 
-from config import DATALOGGERS, FTP_BASE_DIR, FTP_IP, FTP_PASS, FTP_USER
+from config import DATALOGGERS, FTP_IP, FTP_PASS, FTP_USER
 
 
 def modified_str_to_utc(modified_str):
@@ -31,9 +31,10 @@ def get_last_file_stats(ftp, remote_dir):
     return remote_dir, fname, modified
 
 
-def get_last_files_stats(base_dir=FTP_BASE_DIR, subfolders=DATALOGGERS):
+def get_last_files_stats(ftp_dir):
+    base_dir = ftp_dir.get("BASE_DIR")
     dataloggers_stats = []
-    for subfolder in subfolders:
+    for subfolder in ftp_dir.get("SUBFOLDERS"):
         remote_folder = f"{base_dir}/{subfolder}"
         with FTP(FTP_IP, FTP_USER, FTP_PASS) as ftp:
             remote_folder = f"{base_dir}/{subfolder}"

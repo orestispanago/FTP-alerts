@@ -7,7 +7,7 @@ from logging import config
 
 import pandas as pd
 
-from config import CAMS, CAMS_DIR, DATALOGGERS, DATALOGGERS_DIR
+from config import CAMS, DATALOGGERS
 from ftp_file_stats import get_last_files_stats
 from mailer import send_mail
 
@@ -35,18 +35,20 @@ def alert(df, utc_now):
         send_mail(df.to_html(index=False), subject=subject, body=body)
 
 
-def main(base_dir, subfolders):
-    logger.info(f"{'-' * 10} Running main() for {base_dir} {'-' * 10}")
+def main(ftp_dir):
+    logger.info(
+        f"{'-' * 10} Running main() for {ftp_dir.get('BASE_DIR')} {'-' * 10}"
+    )
     utc_now = datetime.datetime.now(datetime.timezone.utc)
-    stats = get_last_files_stats(base_dir=base_dir, subfolders=subfolders)
+    stats = get_last_files_stats(ftp_dir)
     df = pd.DataFrame(stats)
     alert(df, utc_now)
 
 
 if __name__ == "__main__":
     try:
-        main(DATALOGGERS_DIR, DATALOGGERS)
-        main(CAMS_DIR, CAMS)
+        main(DATALOGGERS)
+        main(CAMS)
         logger.info(f"{'-' * 15} SUCCESS {'-' * 15}")
     except:
         logger.error("uncaught exception: %s", traceback.format_exc())
