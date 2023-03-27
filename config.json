@@ -2,18 +2,26 @@
     "FTP_IP": "",
     "FTP_USER": "",
     "FTP_PASS": "",
-    "FTP_BASE_DIR": "/dataloggers",
-    "EMAIL_USER": "",
-    "EMAIL_PASS": "",
-    "EMAIL_RECIPIENTS": [
-        ""
-    ],
+    "DATALOGGERS_DIR": "/dataloggers",
     "DATALOGGERS": [
         "meteo",
         "solar",
         "nilu",
         "rsi",
         "koukouli",
+        "thermi-noise",
         "suntracker"
+    ],
+    "CAMS_DIR": "/cams/All-Sky",
+    "CAMS": [
+        "lapup",
+        "akaza",
+        "athanarg",
+        "tzum"
+    ],
+    "EMAIL_USER": "",
+    "EMAIL_PASS": "",
+    "EMAIL_RECIPIENTS": [
+        "orestis.panagopou@upatras.gr"
     ]
 }
