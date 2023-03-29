@@ -19,7 +19,13 @@ logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
 
-def alert(df, utc_now):
+def main(ftp_dir):
+    logger.info(
+        f"{'-' * 10} Running main() for {ftp_dir.get('BASE_DIR')} {'-' * 10}"
+    )
+    stats = get_last_files_stats(ftp_dir)
+    df = pd.DataFrame(stats)
+    utc_now = datetime.datetime.now(datetime.timezone.utc)
     df_alert = df.loc[(utc_now - df["modified"]) > datetime.timedelta(days=1)]
     if len(df_alert) > 0:
         for index, row in df_alert.iterrows():
@@ -30,19 +36,9 @@ def alert(df, utc_now):
                 df_alert.to_html(header=False), subject=subject, body=body
             )
     else:
-        subject = "REPORT for LapUp FTP"
+        subject = f"REPORT for LapUp {ftp_dir.get('BASE_DIR')}"
         body = f"Everyting OK! Report generated at {format_datetime(utc_now, usegmt=True)}"
         send_mail(df.to_html(index=False), subject=subject, body=body)
-
-
-def main(ftp_dir):
-    logger.info(
-        f"{'-' * 10} Running main() for {ftp_dir.get('BASE_DIR')} {'-' * 10}"
-    )
-    utc_now = datetime.datetime.now(datetime.timezone.utc)
-    stats = get_last_files_stats(ftp_dir)
-    df = pd.DataFrame(stats)
-    alert(df, utc_now)
 
 
 if __name__ == "__main__":
