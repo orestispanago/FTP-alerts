@@ -1,8 +1,10 @@
+import datetime
 import logging
 import os
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from email.utils import format_datetime
 
 from config import EMAIL_PASS, EMAIL_RECIPIENTS, EMAIL_USER
 
@@ -15,14 +17,23 @@ with open(mail_template, "r", encoding="utf-8") as f:
     BODY = f.read()
 
 
-def send_mail(html_table, subject="No subject" ,body=""):
+def send_mail(html_table="", subject="No subject", body=""):
     """Sends mail to multiple recipients if necessary"""
     toaddr = ", ".join(EMAIL_RECIPIENTS)
     msg = MIMEMultipart()
     msg["From"] = EMAIL_USER
     msg["To"] = toaddr
     msg["Subject"] = subject
-    msg.attach(MIMEText(BODY.format(html_table=html_table, body=body), "html"))
+    utc_now = datetime.datetime.now(datetime.timezone.utc)
+    utc_now_fmt = format_datetime(utc_now, usegmt=True)
+    header = f"Email generated at: {utc_now_fmt}"
+    body = body.replace("\n", "<br>")
+    msg.attach(
+        MIMEText(
+            BODY.format(header=header, html_table=html_table, body=body),
+            "html",
+        )
+    )
     server = smtplib.SMTP_SSL("smtp.upatras.gr", 465)
     # gmail settings:
     # server = smtplib.SMTP("smtp.gmail.com", 587)
@@ -31,4 +42,4 @@ def send_mail(html_table, subject="No subject" ,body=""):
     text = msg.as_string()
     server.sendmail(EMAIL_USER, EMAIL_RECIPIENTS, text)
     server.quit()
-    logger.info(f"Mail sent. Subject:{subject}")
+    logger.info(f"Mail sent. Subject: {subject}")

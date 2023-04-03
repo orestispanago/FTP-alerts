@@ -6,9 +6,11 @@ Gets last file stats from last subfolder ```/cams/All-sky``` and ```/dataloggers
 
 Sends:
 
-* an alert if last file was not modified within the past day, or
+* an alert if last file was not modified within the past day
 
-* a report with all last files stats if everything is OK
+* a report if everything is OK
+
+* an alert if FTP server offline
 
 ### Cron job
 
