@@ -31,7 +31,9 @@ def alert(stat):
 
 def report_ok(ftp_dir):
     subject = f"REPORT OK for {ftp_dir['BASE_DIR']}"
-    send_mail(subject=subject)
+    subfolders = "\n".join(ftp_dir['SUBFOLDERS'])
+    body = f"Checked subfolders:\n{subfolders}"
+    send_mail(subject=subject, body=body)
 
 
 def check_ftp_dir(ftp_dir):
