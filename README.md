@@ -1,8 +1,8 @@
 # FTP-alerts
 
-A script to monitor FTP files uploaded by dataloggers and all-sky cameras.
+A script to monitor FTP files uploaded by dataloggers, all-sky cameras and the thermal camera.
 
-Gets last file stats from last subfolder ```/cams/All-sky``` and ```/dataloggers```.
+Gets last file stats from last subfolder ```/cams/All-sky```, ```/cams/Thermal``` and ```/dataloggers```.
 
 Sends:
 

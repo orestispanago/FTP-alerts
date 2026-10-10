@@ -10,22 +10,32 @@
             "nilu",
             "rsi",
             "koukouli",
-            "thermi-noise",
-            "suntracker"
+            "suntracker",
+            "aigio",
+            "eko-ms711",
+            "eko-ms711-dni"
         ]
     },
     "CAMS": {
         "BASE_DIR": "/cams/All-Sky",
         "SUBFOLDERS": [
             "lapup",
-            "akaza",
             "athanarg",
-            "tzum"
+            "tzum",
+            "lapup-Q71-exposure"
+        ]
+    },
+    "THERMAL_CAMS": {
+        "BASE_DIR": "/cams/Thermal",
+        "SUBFOLDERS": [
+            "Mobotix/static"
         ]
     },
     "EMAIL_USER": "",
     "EMAIL_PASS": "",
     "EMAIL_RECIPIENTS": [
-        "orestis.panagopou@upatras.gr"
+        "orestis.panagopou@upatras.gr",
+        "panagiwths.ioannidis117@gmail.com",
+        "samouris.mixalis@gmail.com"
     ]
 }

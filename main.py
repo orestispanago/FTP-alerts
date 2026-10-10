@@ -2,10 +2,9 @@ import datetime
 import logging
 import os
 import traceback
-from email.utils import format_datetime
 from logging import config
 
-from config import CAMS, DATALOGGERS
+from config import CAMS, DATALOGGERS, THERMAL_CAMS
 from ftp_file_stats import get_last_files_stats
 from mailer import send_mail
 
@@ -31,7 +30,7 @@ def alert(stat):
 
 def report_ok(ftp_dir):
     subject = f"REPORT OK for {ftp_dir['BASE_DIR']}"
-    subfolders = "\n".join(ftp_dir['SUBFOLDERS'])
+    subfolders = "\n".join(ftp_dir["SUBFOLDERS"])
     body = f"Checked subfolders:\n{subfolders}"
     send_mail(subject=subject, body=body)
 
@@ -52,6 +51,7 @@ def main():
     try:
         check_ftp_dir(DATALOGGERS)
         check_ftp_dir(CAMS)
+        check_ftp_dir(THERMAL_CAMS)
     except TimeoutError as e:
         send_mail(subject="NAS OFFLINE")
         logger.warning(f"FTP server TimeoutError: \n{e}")
