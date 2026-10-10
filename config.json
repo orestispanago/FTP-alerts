@@ -1,7 +1,4 @@
 {
-    "FTP_IP": "",
-    "FTP_USER": "",
-    "FTP_PASS": "",
     "DATALOGGERS": {
         "BASE_DIR": "/dataloggers",
         "SUBFOLDERS": [
@@ -31,8 +28,6 @@
             "Mobotix/static"
         ]
     },
-    "EMAIL_USER": "",
-    "EMAIL_PASS": "",
     "EMAIL_RECIPIENTS": [
         "orestis.panagopou@upatras.gr",
         "panagiwths.ioannidis117@gmail.com",

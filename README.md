@@ -12,6 +12,18 @@ Sends:
 
 * an alert if FTP server offline
 
+### Setup
+
+```
+pip install -r requirements.txt
+cp .env.example .env
+chmod 600 .env
+```
+
+Set the real values in `.env` (FTP and email credentials), replacing the placeholders. It is in `.gitignore`. 
+
+Folders to check and email recipients are in `config.json`.
+
 ### Cron job
 
 To run every day at 09:00 UTC use:
