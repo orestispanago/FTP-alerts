@@ -15,7 +15,7 @@ Sends:
 ### Setup
 
 ```
-pip install -r requirements.txt
+sudo apt install python3-dotenv
 cp .env.example .env
 chmod 600 .env
 ```
