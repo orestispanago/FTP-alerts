@@ -52,9 +52,18 @@ def main():
         check_ftp_dir(DATALOGGERS)
         check_ftp_dir(CAMS)
         check_ftp_dir(THERMAL_CAMS)
-    except TimeoutError as e:
-        send_mail(subject="NAS OFFLINE")
-        logger.warning(f"FTP server TimeoutError: \n{e}")
+    except OSError as e:
+        # Timeout, no route to host, connection refused: the NAS is not reachable
+        logger.warning(f"FTP server unreachable: \n{e}")
+        send_mail(subject="NAS OFFLINE", body=str(e))
+
+
+def report_failure(error_trace):
+    logger.error("uncaught exception: %s", error_trace)
+    try:
+        send_mail(subject="DAILY CHECK FAILED", body=error_trace)
+    except Exception:
+        logger.error("could not send failure mail: %s", traceback.format_exc())
 
 
 if __name__ == "__main__":
@@ -62,4 +71,4 @@ if __name__ == "__main__":
         main()
         logger.info(f"{'-' * 15} SUCCESS {'-' * 15}")
     except:
-        logger.error("uncaught exception: %s", traceback.format_exc())
+        report_failure(traceback.format_exc())

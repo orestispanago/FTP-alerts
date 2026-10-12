@@ -34,7 +34,7 @@ def get_last_file_stats(ftp, remote_dir):
 def get_last_files_stats(ftp_dir):
     base_dir = ftp_dir.get("BASE_DIR")
     dataloggers_stats = []
-    with FTP(FTP_IP, FTP_USER, FTP_PASS) as ftp:
+    with FTP(FTP_IP, FTP_USER, FTP_PASS, timeout=30) as ftp:
         for subfolder in ftp_dir.get("SUBFOLDERS"):
             remote_folder = f"{base_dir}/{subfolder}"
             dirname, fname, modified = get_last_file_stats(ftp, remote_folder)
