@@ -4,7 +4,7 @@ import os
 import traceback
 from logging import config
 
-from config import CAMS, DATALOGGERS, THERMAL_CAMS
+from config import CAMS, DATALOGGERS, FTP_IP, THERMAL_CAMS
 from ftp_file_stats import get_last_files_stats
 from mailer import send_mail
 
@@ -55,7 +55,7 @@ def main():
     except OSError as e:
         # Timeout, no route to host, connection refused: the NAS is not reachable
         logger.warning(f"FTP server unreachable: \n{e}")
-        send_mail(subject="NAS OFFLINE", body=str(e))
+        send_mail(subject=f"NAS OFFLINE: {FTP_IP}")
 
 
 def report_failure(error_trace):
