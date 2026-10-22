@@ -35,12 +35,20 @@ def report_ok(ftp_dir):
     send_mail(subject=subject, body=body)
 
 
+def is_too_old(stat):
+    too_old = True
+    if stat["modified"] is not None:
+        if stat["accessed"] - stat["modified"] <= datetime.timedelta(days=1):
+            too_old = False
+    return too_old
+
+
 def check_ftp_dir(ftp_dir):
     logger.info(f"{'-' * 10} Checking: {ftp_dir['BASE_DIR']} {'-' * 10}")
     files_stats = get_last_files_stats(ftp_dir)
     too_old = []
     for stat in files_stats:
-        if stat["accessed"] - stat["modified"] > datetime.timedelta(days=1):
+        if is_too_old(stat):
             too_old.append(stat)
             alert(stat)
     if len(too_old) == 0:
@@ -61,7 +69,7 @@ def main():
 def report_failure(error_trace):
     logger.error("uncaught exception: %s", error_trace)
     try:
-        send_mail(subject="DAILY CHECK FAILED", body=error_trace)
+        send_mail(subject="DAILY CHECK FAILED")
     except Exception:
         logger.error("could not send failure mail: %s", traceback.format_exc())
 

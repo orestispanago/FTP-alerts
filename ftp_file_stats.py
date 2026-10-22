@@ -10,8 +10,7 @@ def modified_str_to_utc(modified_str):
     return modified_utc
 
 
-def get_last_file_stats(ftp, remote_dir):
-    """Enters last FTP directory recursively and gets last file stats"""
+def list_folders_and_files(ftp, remote_dir):
     ftp.cwd(remote_dir)
     folders, files = [], []
     for entry in ftp.mlsd():
@@ -19,16 +18,41 @@ def get_last_file_stats(ftp, remote_dir):
             folders.append(entry)
         elif entry[1]["type"] == "file":
             files.append(entry)
-    folders = sorted(folders)
-    if len(folders) > 0:
-        last_folder = folders[-1]
-        remote_dir = f"{remote_dir}/{last_folder[0]}"
-        return get_last_file_stats(ftp, remote_dir)
-    files = sorted(files)
-    last_file = files[-1]
-    fname = last_file[0]
-    modified = last_file[1]["modify"]
-    return remote_dir, fname, modified
+    return sorted(folders), sorted(files)
+
+
+def get_last_file_stats(ftp, remote_dir):
+    """Searches folders newest first, skipping empty ones. Returns None if no file is found"""
+    folders, files = list_folders_and_files(ftp, remote_dir)
+    last_file_stats = None
+    index = len(folders) - 1
+    while last_file_stats is None and index >= 0:
+        folder_path = f"{remote_dir}/{folders[index][0]}"
+        last_file_stats = get_last_file_stats(ftp, folder_path)
+        index -= 1
+    if last_file_stats is None and len(files) > 0:
+        last_file = files[-1]
+        last_file_stats = (remote_dir, last_file[0], last_file[1]["modify"])
+    return last_file_stats
+
+
+def make_stats(subfolder, remote_folder, last_file_stats):
+    accessed_utc = datetime.datetime.now(datetime.timezone.utc)
+    if last_file_stats is None:
+        dirname = remote_folder
+        fname = "no files found"
+        modified_utc = None
+    else:
+        dirname, fname, modified = last_file_stats
+        modified_utc = modified_str_to_utc(modified)
+    stats = {
+        "subfolder": subfolder,
+        "directory": dirname,
+        "last_file": fname,
+        "modified": modified_utc,
+        "accessed": accessed_utc,
+    }
+    return stats
 
 
 def get_last_files_stats(ftp_dir):
@@ -37,15 +61,7 @@ def get_last_files_stats(ftp_dir):
     with FTP(FTP_IP, FTP_USER, FTP_PASS, timeout=30) as ftp:
         for subfolder in ftp_dir.get("SUBFOLDERS"):
             remote_folder = f"{base_dir}/{subfolder}"
-            dirname, fname, modified = get_last_file_stats(ftp, remote_folder)
-            modified_utc = modified_str_to_utc(modified)
-            accessed_utc = datetime.datetime.now(datetime.timezone.utc)
-            stats = {
-                "subfolder": subfolder,
-                "directory": dirname,
-                "last_file": fname,
-                "modified": modified_utc,
-                "accessed": accessed_utc,
-            }
+            last_file_stats = get_last_file_stats(ftp, remote_folder)
+            stats = make_stats(subfolder, remote_folder, last_file_stats)
             dataloggers_stats.append(stats)
     return dataloggers_stats

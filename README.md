@@ -2,7 +2,7 @@
 
 A script to monitor FTP files uploaded by dataloggers, all-sky cameras and the thermal camera.
 
-Gets last file stats from last subfolder ```/cams/All-sky```, ```/cams/Thermal``` and ```/dataloggers```.
+Gets the newest file (skipping empty folders) in ```/cams/All-sky```, ```/cams/Thermal``` and ```/dataloggers```.
 
 Sends:
 
