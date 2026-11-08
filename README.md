@@ -6,9 +6,9 @@ Gets the newest file (skipping empty folders) in ```/cams/All-sky```, ```/cams/T
 
 Sends:
 
-* an alert if last file was not modified within the past day
+* an alert for each folder whose last file was not modified within the past day
 
-* a report if everything is OK
+* one report if everything is OK
 
 * an alert if FTP server offline
 

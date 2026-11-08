@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 def alert(stat):
-    subject = f"ALERT for {stat['subfolder']}"
+    subject = f"FTP check: ALERT for {stat['subfolder']}"
     accessed_fmt = stat["accessed"].strftime("%Y-%m-%d %H:%M:%S%z")
     body = (
         f"FTP directory: {stat['directory']}\n"
@@ -28,11 +28,13 @@ def alert(stat):
     send_mail(subject=subject, body=body)
 
 
-def report_ok(ftp_dir):
-    subject = f"REPORT OK for {ftp_dir['BASE_DIR']}"
-    subfolders = "\n".join(ftp_dir["SUBFOLDERS"])
-    body = f"Checked subfolders:\n{subfolders}"
-    send_mail(subject=subject, body=body)
+def report_ok():
+    lines = ["Checked subfolders:"]
+    for ftp_dir in (DATALOGGERS, CAMS, THERMAL_CAMS):
+        lines.append(
+            f"{ftp_dir['BASE_DIR']}: {', '.join(ftp_dir['SUBFOLDERS'])}"
+        )
+    send_mail(subject="FTP check: OK", body="\n".join(lines))
 
 
 def is_too_old(stat):
@@ -51,15 +53,16 @@ def check_ftp_dir(ftp_dir):
         if is_too_old(stat):
             too_old.append(stat)
             alert(stat)
-    if len(too_old) == 0:
-        report_ok(ftp_dir)
+    return too_old
 
 
 def main():
     try:
-        check_ftp_dir(DATALOGGERS)
-        check_ftp_dir(CAMS)
-        check_ftp_dir(THERMAL_CAMS)
+        too_old = check_ftp_dir(DATALOGGERS)
+        too_old += check_ftp_dir(CAMS)
+        too_old += check_ftp_dir(THERMAL_CAMS)
+        if len(too_old) == 0:
+            report_ok()
     except OSError as e:
         # Timeout, no route to host, connection refused: the NAS is not reachable
         logger.warning(f"FTP server unreachable: \n{e}")
